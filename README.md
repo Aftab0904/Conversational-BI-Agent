@@ -16,7 +16,7 @@ This project is an AI-powered BI system that converts natural language queries i
 - Groq LLM
 
 ## Dataset
-
+data is available for free
 Download dataset from:
 https://www.kaggle.com/datasets/psparks/instacart-market-basket-analysis
 files inside:
