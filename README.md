@@ -1,5 +1,7 @@
 # Conversational BI Agent
 
+![UI](assets/sql.png)
+
 This project is an AI-powered BI system that converts natural language queries into SQL and generates insights from structured data.
 
 ## Features
@@ -26,3 +28,4 @@ data/
 2. Install requirements
 3. Add .env file with GROQ_API_KEY
 4. Run: streamlit run app/ui.py
+
