@@ -66,7 +66,7 @@ if st.button("Run"):
     # Save last query
     st.session_state.last_query = full_query
 
-    st.write("🧠 Interpreted Query:", full_query)
+    st.write("Interpreted Query:", full_query)
 
     # -------------------------------
     # GENERATE SQL
@@ -77,7 +77,7 @@ if st.button("Run"):
     st.code(sql, language="sql")
 
     # -------------------------------
-    # RUN QUERY (WITH SPINNER 🔥)
+    # RUN QUERY
     # -------------------------------
     with st.spinner("Processing query..."):
         result = run_query_with_retry(con, sql, full_query, llm)

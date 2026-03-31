@@ -34,30 +34,80 @@ This system solves that by:
 
 ## Architecture Overview
 
-User Query  
-        |  
-        v  
-LLM (NL → SQL)  
-        |  
-        v  
-SQL Query Generation (nl_to_sql.py)  
-        |  
-        v  
-DuckDB Execution (db.py)  
-        |  
-        v  
-Retry Logic (query.py)  
-        |  
-        v  
-Result Table  
-        |  
-        v  
-Visualization (visualize.py)  
-        |  
-        v  
-Streamlit UI (ui.py)  
+```mermaid
+flowchart TD
 
----
+    %% ----------------------
+    %% USER LAYER
+    %% ----------------------
+    subgraph USER_LAYER
+        A[User Query]
+    end
+
+    %% ----------------------
+    %% LLM LAYER
+    %% ----------------------
+    subgraph LLM_LAYER
+        B[NL to SQL Conversion<br>nl_to_sql.py]
+        C[LLM Reasoning<br>Groq - LLaMA]
+    end
+
+    %% ----------------------
+    %% QUERY GENERATION
+    %% ----------------------
+    subgraph QUERY_LAYER
+        D[Generated SQL Query]
+    end
+
+    %% ----------------------
+    %% EXECUTION LAYER
+    %% ----------------------
+    subgraph EXECUTION_LAYER
+        E[Database Execution<br>db.py - DuckDB]
+        F[Retry Logic<br>query.py]
+    end
+
+    %% ----------------------
+    %% RESULT PROCESSING
+    %% ----------------------
+    subgraph RESULT_LAYER
+        G[Result Table]
+        H[Visualization Engine<br>visualize.py]
+    end
+
+    %% ----------------------
+    %% UI LAYER
+    %% ----------------------
+    subgraph UI_LAYER
+        I[Streamlit UI<br>ui.py]
+    end
+
+    %% FLOW
+    A --> B --> C --> D --> E
+
+    E -->|Success| G
+    E -->|Error| F --> B
+
+    G --> H --> I
+
+    %% ----------------------
+    %% STYLING
+    %% ----------------------
+    style A fill:#1f77b4,color:#fff
+
+    style B fill:#d62728,color:#fff
+    style C fill:#d62728,color:#fff
+
+    style D fill:#9467bd,color:#fff
+
+    style E fill:#2ca02c,color:#fff
+    style F fill:#ff7f0e,color:#fff
+
+    style G fill:#17becf,color:#000
+    style H fill:#17becf,color:#000
+
+    style I fill:#000000,color:#fff
+```
 
 ## How to Run
 
