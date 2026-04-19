@@ -1,216 +1,75 @@
-# Conversational BI Agent
+# DataMind BI: Advanced Conversational Data Analytics Platform
 
-An AI-powered Business Intelligence system that allows users to query structured data using natural language.
-The system converts user queries into SQL, executes them on a database, and returns insights with automatic visualization.
+DataMind BI is an enterprise-grade conversational intelligence system that enables users to interact with structured databases using natural language. Built with a focus on self-healing logic and predictive discovery, this platform bridges the gap between complex analytical databases and human intuition.
 
----
+## Core Value Proposition
 
-## Features
+Standard Business Intelligence tools often require specialized knowledge of SQL or drag-and-drop interfaces. DataMind BI eliminates this barrier by providing a fluid, chat-based interface that handles the heavy lifting of query generation, execution, and visualization.
 
-- Natural Language to SQL conversion
-- Automatic SQL error correction (retry logic)
-- Conversational memory (follow-up queries)
-- Automatic data visualization
-- Fast query execution using DuckDB
-- Streamlit-based interactive UI
+## Technical Architecture
 
----
+The platform is designed with a decoupled architecture, ensuring scalability and low-latency performance.
 
-## Problem Statement
+### Logic Flow
 
-Business users often need insights from data but do not know SQL.
+1. **Natural Language Processing**: The system receives a user query and performs acronym resolution and context mapping.
+2. **Autonomous Query Synthesis**: Utilizing Groq Llama 3.3 70B, the agent drafts optimized SQL queries targeted for a DuckDB analytical backend.
+3. **Recursive Self-Correction**: If a query fails, the agent interprets the database error and automatically fixes the syntax before returning results.
+4. **Contextual Suggestion Engine**: The system analyzes returned data to proactively suggest the next logical steps for data discovery.
+5. **Interactive Visualization Layer**: Data is streamed to a React 19 frontend which dynamically renders charts using Recharts.
 
-Traditional BI tools require:
-- Writing SQL queries
-- Understanding database schemas
-- Technical expertise
+## Interface Showcase
 
-This system solves that by:
-- Allowing users to ask questions in plain English
-- Automatically generating SQL queries
-- Returning results with visualizations
+<p align="center">
+  <img src="assets/Screenshot (206).png" width="45%" />
+  <img src="assets/Screenshot (207).png" width="45%" />
+</p>
+<p align="center">
+  <img src="assets/Screenshot (208).png" width="45%" />
+  <img src="assets/Screenshot (209).png" width="45%" />
+</p>
 
----
+## Technical Stack
 
-## Architecture Overview
+* **Frontend**: React 19 (Vite), Tailwind CSS, Framer Motion, Recharts.
+* **Backend**: FastAPI (Python), multi-threaded async execution.
+* **Reasoning Engine**: Groq Llama 3.3 70B (Low-latency inference).
+* **Analytical Engine**: DuckDB (In-memory analytical processing).
+* **Data Orchestration**: LangChain, Pandas.
 
-```mermaid
-flowchart TD
+## Implementation Features
 
-    %% ----------------------
-    %% USER LAYER
-    %% ----------------------
-    subgraph USER_LAYER
-        A[User Query]
-    end
+* **Self-Healing SQL**: Robust error handling that fixes syntax errors in real-time.
+* **Predictive discovery**: Generates 3 contextual follow-up questions after every response.
+* **Hybrid Visuals**: Automatic selection between Bar, Line, and Pie charts based on data properties.
+* **Data Storytelling**: Provides natural language summaries alongside raw tables.
 
-    %% ----------------------
-    %% LLM LAYER
-    %% ----------------------
-    subgraph LLM_LAYER
-        B[NL to SQL Conversion<br>nl_to_sql.py]
-        C[LLM Reasoning<br>Groq - LLaMA]
-    end
+## Deployment Guide
 
-    %% ----------------------
-    %% QUERY GENERATION
-    %% ----------------------
-    subgraph QUERY_LAYER
-        D[Generated SQL Query]
-    end
+### Backend Configuration
 
-    %% ----------------------
-    %% EXECUTION LAYER
-    %% ----------------------
-    subgraph EXECUTION_LAYER
-        E[Database Execution<br>db.py - DuckDB]
-        F[Retry Logic<br>query.py]
-    end
-
-    %% ----------------------
-    %% RESULT PROCESSING
-    %% ----------------------
-    subgraph RESULT_LAYER
-        G[Result Table]
-        H[Visualization Engine<br>visualize.py]
-    end
-
-    %% ----------------------
-    %% UI LAYER
-    %% ----------------------
-    subgraph UI_LAYER
-        I[Streamlit UI<br>ui.py]
-    end
-
-    %% FLOW
-    A --> B --> C --> D --> E
-
-    E -->|Success| G
-    E -->|Error| F --> B
-
-    G --> H --> I
-
-    %% ----------------------
-    %% STYLING
-    %% ----------------------
-    style A fill:#1f77b4,color:#fff
-
-    style B fill:#d62728,color:#fff
-    style C fill:#d62728,color:#fff
-
-    style D fill:#9467bd,color:#fff
-
-    style E fill:#2ca02c,color:#fff
-    style F fill:#ff7f0e,color:#fff
-
-    style G fill:#17becf,color:#000
-    style H fill:#17becf,color:#000
-
-    style I fill:#000000,color:#fff
+1. Create a `.env` file in the `app/` directory:
+```text
+GROQ_API_KEY=your_api_key_here
 ```
 
-## How to Run
+2. Run the FastAPI server:
+```powershell
+# From the root directory
+python app/api.py
+```
 
-### 1. Clone the repository
+### Frontend Configuration
 
-git clone https://github.com/Aftab0904/Conversational-BI-Agent.git
-cd conversational-bi-agent  
+1. Install dependencies:
+```powershell
+cd frontend
+npm install
+```
 
----
+2. Start the development server:
+```powershell
+npm run dev
+```
 
-### 2. Create virtual environment
-
-python -m venv venv  
-venv\Scripts\activate  
-
----
-
-### 3. Install dependencies
-
-pip install -r requirements.txt  
-
----
-
-### 4. Setup environment variables
-
-Create a `.env` file:
-
-GROQ_API_KEY=your_api_key_here  
-
----
-
-### 5. Run the application
-
-streamlit run app/ui.py  
-
----
-
-## Key Design Decisions
-
-1. NL to SQL Approach  
-Used LLM to convert natural language into SQL queries to make the system accessible to non-technical users.
-
-2. Schema-aware Prompting  
-Provided database schema to the LLM to avoid incorrect table generation.
-
-3. Few-shot Prompting  
-Used examples to improve SQL accuracy and reduce hallucinations.
-
-4. Retry Logic  
-If SQL execution fails, the system automatically corrects the query using the error message.
-
-5. DuckDB Usage  
-Used DuckDB as an in-memory analytical database for fast execution without setup.
-
-6. Automatic Visualization  
-Charts are generated based on result structure to improve interpretability.
-
-7. Conversational Memory  
-Follow-up queries are handled using session state.
-
----
-
-## Limitations and Failure Modes
-
-- SQL generation may fail for very complex queries
-- Visualization logic is basic and may not always select the best chart
-- Depends on LLM accuracy
-- Schema changes require prompt updates
-
----
-
-## Future Improvements
-
-- Add advanced chart selection logic
-- Support multi-database connections
-- Add caching for faster repeated queries
-- Improve SQL validation and optimization
-- Add user authentication and dashboard saving
-
----
-
-## Tech Stack
-
-- Python  
-- Streamlit  
-- LangChain  
-- DuckDB  
-- Groq LLM  
-
----
-
-## Dataset
-
-Instacart Market Basket Analysis Dataset (Kaggle)
-
----
-
-## Conclusion
-
-This project demonstrates how AI can bridge the gap between business users and data by enabling natural language interaction with structured databases.
-
-# Demo Conversational BI Agent
-
-![UI](assets/sql.png)
-
-
+The platform will be accessible at http://localhost:5173.
