@@ -59,7 +59,28 @@ Watch the full walkthrough of the system generating SQL and charts in real-time.
 
 ## Technical Architecture
 
-How the system processes natural language into data insights:
+The following diagram illustrates how a user's natural language question is transformed into a structured data insight:
+
+```mermaid
+graph TD
+    A[User Question] --> B[React 19 Interface]
+    B --> C[FastAPI Backend]
+    C --> D[Groq Llama 3.3 Agent]
+    D --> E{Draft SQL Query}
+    E --> F[(DuckDB Analytics)]
+    F -- Syntax Error --> D
+    F -- Data Result --> G[Insight Generator]
+    G --> H[Natural Language Summary]
+    G --> I[Contextual Suggestions]
+    G --> J[Interactive Recharts]
+    H & I & J --> B
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px,color:#000
+    style B fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
+    style C fill:#009688,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#F55036,stroke:#333,stroke-width:2px,color:#fff
+    style F fill:#FFF000,stroke:#333,stroke-width:2px,color:#000
+```
 
 1. **Natural Language Processing**: The system receives a user query and performs acronym resolution and context mapping.
 2. **Autonomous Query Synthesis**: The agent drafts optimized SQL queries targeted for a DuckDB analytical backend.
